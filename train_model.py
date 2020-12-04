@@ -18,7 +18,6 @@ validation_labels = get_label("validation")
 train_images = get_images("train")
 validation_images = get_images("validation")
 
-
 num_class = 48
 
 model=create_model(num_class)

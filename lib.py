@@ -21,7 +21,7 @@ def get_label(dir):
         image_name.extend(filenames)
     for image in image_name:
         labels.append(image.split("_")[0])
-    labels = [int(numeric_string)-1 for numeric_string in labels]
+    labels = [int(numeric_string) for numeric_string in labels]
     labels=np.array(labels)
     return labels
 
