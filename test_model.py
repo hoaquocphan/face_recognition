@@ -11,11 +11,11 @@ from lib import get_label, get_images, create_model
 
 print(tf.__version__)
 
-test_labels = get_label("test")
-test_images = get_images("test")
-
-
 num_class = 48
+test_labels = get_label("test",num_class)
+test_images = get_images("test",num_class)
+
+
 
 model=create_model(num_class)
 
