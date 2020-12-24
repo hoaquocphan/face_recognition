@@ -8,19 +8,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from lib import get_label, get_images, create_model
-
+import argparse
 print(tf.__version__)
 
 
-train_labels = get_label("train")
-validation_labels = get_label("validation")
+num_class=48
 
-train_images = get_images("train")
-validation_images = get_images("validation")
+train_labels = get_label("train",num_class)
+validation_labels = get_label("validation",num_class)
 
-num_class = 48
+train_images = get_images("train",num_class)
+validation_images = get_images("validation",num_class)
+
+print(train_labels)
+print(validation_labels)
+
+
 
 model=create_model(num_class)
+
 
 checkpoint_path = "model/cp.ckpt"
 checkpoint_dir = os.path.dirname(checkpoint_path)

@@ -15,7 +15,24 @@ import shutil
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--d', type=str, default='dir') 
+parser.add_argument('--p', type=str, default=1) 
 args = parser.parse_args()
+
+def create_new_label(dirname):
+    image_name=[]
+    label_array=[]
+    count=-1
+    for (dirpath, dirnames, filenames) in walk(dirname):
+        image_name.extend(filenames)
+    for image in image_name:
+        old_label=image.split("_")[0]
+        if int(image.split("_")[0]) not in label_array:
+            count+=1
+            label_array.append(int(image.split("_")[0]))
+        new_label=str(count)
+        input_name= os.path.join(dirname,image)
+        output_name= os.path.join(dirname, new_label + "_" + image)
+        os.rename(input_name, output_name)
 
 def main():
     image_name = []
@@ -33,11 +50,12 @@ def main():
         os.rmdir(validation_dir)
     if os.path.isdir(test_dir):
         os.rmdir(test_dir)
+    
     shutil.copytree(input_dir, train_dir)
     os.mkdir(validation_dir)
     os.mkdir(test_dir)
 
-    
+    image_name = []
     for (dirpath, dirnames, filenames) in walk(train_dir):
         image_name.extend(filenames)
     for image in image_name:
@@ -118,6 +136,10 @@ def main():
         image_name_class.remove(valid_image)
     image_name_class = []
     
+    create_new_label(train_dir)
+    create_new_label(validation_dir)
+    create_new_label(test_dir)
+
 
 
 if __name__ == "__main__":

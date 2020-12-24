@@ -14,23 +14,36 @@ def preprocess_image(img):
     input_img = cv2.resize(input_img, (182, 182)) 
     return input_img
 
-def get_label(dir):
+def get_label(dir,num_class):
     image_name = []
     labels = []
+    count = 0
     for (dirpath, dirnames, filenames) in walk(dir):
         image_name.extend(filenames)
     for image in image_name:
+        if image.split("_")[0] not in labels:
+            count +=1
+        if count > num_class:
+            break
         labels.append(image.split("_")[0])
+
     labels = [int(numeric_string) for numeric_string in labels]
     labels=np.array(labels)
     return labels
 
-def get_images(dir):
+def get_images(dir,num_class):
     image_name=[]
     images =[]
+    image_name2=[]
+    count = 0
     for (dirpath, dirnames, filenames) in walk(dir):
         image_name.extend(filenames)
     for image in image_name:
+        if image.split("_")[0] not in image_name2:
+            count +=1
+        if count > num_class:
+            break
+        image_name2.append(image.split("_")[0])
         image_file = dir + "/" + image
         image=preprocess_image(image_file)
         images.append(image)
