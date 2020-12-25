@@ -8,10 +8,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from lib import get_label, get_images, create_model
-
+import argparse
 print(tf.__version__)
 
-num_class = 48
+parser = argparse.ArgumentParser()
+parser.add_argument('--n', type=int, default=48)
+args = parser.parse_args()
+
+num_class=args.n
+
 test_labels = get_label("test",num_class)
 test_images = get_images("test",num_class)
 

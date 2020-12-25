@@ -12,36 +12,45 @@ import argparse
 print(tf.__version__)
 
 
-num_class=48
+parser = argparse.ArgumentParser()
+parser.add_argument('--n', type=int, default=48)
+args = parser.parse_args()
+
+num_class=args.n
 
 
 print("loading train label")
-if os.path.isfile("train_labels.npy"):
-    train_labels = np.load('train_labels.npy') 
+npy_file = "train_labels_" + str(num_class) + ".npy"
+if os.path.isfile(npy_file):
+    train_labels = np.load(npy_file) 
 else:
     train_labels = get_label("train",num_class)
-    np.save('train_labels.npy', train_labels)
+    np.save(npy_file, train_labels)
 
 print("loading validation label")
-if os.path.isfile("validation_labels.npy"):
-    validation_labels = np.load('validation_labels.npy')
+npy_file = "validation_labels_" + str(num_class) + ".npy"
+if os.path.isfile(npy_file):
+    validation_labels = np.load(npy_file)
 else:
     validation_labels = get_label("validation",num_class)
-    np.save('validation_labels.npy', validation_labels)
+    np.save(npy_file, validation_labels)
+
 
 print("loading train image")
-if os.path.isfile("train_images.npy"):
-    train_images = np.load('train_images.npy')
+npy_file = "train_images_" + str(num_class) + ".npy"
+if os.path.isfile(npy_file):
+    train_images = np.load(npy_file)
 else:
     train_images = get_images("train",num_class)
-    np.save('train_images.npy', train_images)
+    np.save(npy_file, train_images)
 
 print("loading validation image")
-if os.path.isfile("validation_images.npy"):
-    validation_images = np.load('validation_images.npy')
+npy_file = "validation_images_" + str(num_class) + ".npy"
+if os.path.isfile(npy_file):
+    validation_images = np.load(npy_file)
 else:
     validation_images = get_images("validation",num_class)
-    np.save('validation_images.npy', validation_images)
+    np.save(npy_file, validation_images)
 
 
 

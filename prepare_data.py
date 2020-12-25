@@ -1,7 +1,7 @@
 import tensorflow as tf
 import cv2
 import numpy as np
-import onnxruntime
+#import onnxruntime
 #import mxnet
 #import mxnet as mx
 #from mxnet.gluon.data.vision import transforms
