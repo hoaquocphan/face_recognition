@@ -8,10 +8,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 
-def preprocess_image(img):
+def preprocess_image(img,model_name):
     image = cv2.imread(img)
-    input_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    input_img = cv2.resize(input_img, (182, 182)) 
+    if model_name == "normal":
+        input_img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        input_img = cv2.resize(input_img, (182, 182)) 
+    elif model_name == "alexnet":
+        input_img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB).astype(np.float32)
+        input_img = cv2.resize(input_img, (227, 227)) 
     return input_img
 
 def get_label(dir,num_class):
@@ -40,7 +44,7 @@ def get_label(dir,num_class):
     labels=np.array(labels)
     return labels
 
-def get_images(dir,num_class):
+def get_images(dir,num_class,model_name):
     image_name=[]
     images =[]
     image_name2=[]
@@ -64,10 +68,11 @@ def get_images(dir,num_class):
             break
         image_name2.append(image.split("_")[0])
         image_file = dir + "/" + image
-        image=preprocess_image(image_file)
+        image=preprocess_image(image_file,model_name)
         images.append(image)
     images = np.array(images)
-    images = images/255.0
+    if model_name == "normal":
+        images = images/255.0
     return images
 
 

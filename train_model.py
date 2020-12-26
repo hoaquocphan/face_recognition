@@ -18,7 +18,7 @@ parser.add_argument('--m', type=str, default='normal')
 args = parser.parse_args()
 
 num_class=args.n
-
+model_name=args.m
 
 print("loading train label")
 npy_file = "train_labels_" + str(num_class) + ".npy"
@@ -42,7 +42,7 @@ npy_file = "train_images_" + str(num_class) + ".npy"
 if os.path.isfile(npy_file):
     train_images = np.load(npy_file)
 else:
-    train_images = get_images("train",num_class)
+    train_images = get_images("train",num_class,model_name)
     np.save(npy_file, train_images)
 
 print("loading validation image")
@@ -50,7 +50,7 @@ npy_file = "validation_images_" + str(num_class) + ".npy"
 if os.path.isfile(npy_file):
     validation_images = np.load(npy_file)
 else:
-    validation_images = get_images("validation",num_class)
+    validation_images = get_images("validation",num_class,model_name)
     np.save(npy_file, validation_images)
 
 def process_images(image, label):

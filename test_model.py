@@ -17,9 +17,10 @@ parser.add_argument('--m', type=str, default='normal')
 args = parser.parse_args()
 
 num_class=args.n
+model_name=args.m
 
 test_labels = get_label("test",num_class)
-test_images = get_images("test",num_class)
+test_images = get_images("test",num_class,model_name)
 
 
 if args.m == "normal":
