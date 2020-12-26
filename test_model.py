@@ -28,6 +28,7 @@ if args.m == "normal":
 elif args.m =="alexnet":
     model=create_alexnet_model(num_class)
     checkpoint_path = "model_alexnet/cp.ckpt"
+    test_labels=np.expand_dims(test_labels, axis=1)
 
 
 
