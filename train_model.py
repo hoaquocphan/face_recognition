@@ -26,7 +26,7 @@ if os.path.isfile(npy_file):
     train_labels = np.load(npy_file) 
 else:
     train_labels = get_label("train",num_class)
-    np.save(npy_file, train_labels)
+    #np.save(npy_file, train_labels)
 
 print("loading validation label")
 npy_file = "validation_labels_" + str(num_class) + ".npy"
@@ -34,7 +34,7 @@ if os.path.isfile(npy_file):
     validation_labels = np.load(npy_file)
 else:
     validation_labels = get_label("validation",num_class)
-    np.save(npy_file, validation_labels)
+    #np.save(npy_file, validation_labels)
 
 
 print("loading train image")
@@ -43,7 +43,7 @@ if os.path.isfile(npy_file):
     train_images = np.load(npy_file)
 else:
     train_images = get_images("train",num_class,model_name)
-    np.save(npy_file, train_images)
+    #np.save(npy_file, train_images)
 
 print("loading validation image")
 npy_file = "validation_images_" + str(num_class) + ".npy"
@@ -51,7 +51,7 @@ if os.path.isfile(npy_file):
     validation_images = np.load(npy_file)
 else:
     validation_images = get_images("validation",num_class,model_name)
-    np.save(npy_file, validation_images)
+    #np.save(npy_file, validation_images)
 
 def process_images(image, label):
     image = tf.image.per_image_standardization(image)
