@@ -20,6 +20,7 @@ args = parser.parse_args()
 num_class=args.n
 model_name=args.m
 
+print("-------------------------------")
 print("loading train label")
 npy_file = "train_labels_" + str(num_class) + ".npy"
 if os.path.isfile(npy_file):
@@ -27,7 +28,9 @@ if os.path.isfile(npy_file):
 else:
     train_labels = get_label("train",num_class)
     #np.save(npy_file, train_labels)
+print('train_labels.shape: {}'.format(train_labels.shape))
 
+print("-------------------------------")
 print("loading validation label")
 npy_file = "validation_labels_" + str(num_class) + ".npy"
 if os.path.isfile(npy_file):
@@ -35,8 +38,9 @@ if os.path.isfile(npy_file):
 else:
     validation_labels = get_label("validation",num_class)
     #np.save(npy_file, validation_labels)
+print('validation_labels.shape: {}'.format(validation_labels.shape))
 
-
+print("-------------------------------")
 print("loading train image")
 npy_file = "train_images_" + str(num_class) + ".npy"
 if os.path.isfile(npy_file):
@@ -44,7 +48,9 @@ if os.path.isfile(npy_file):
 else:
     train_images = get_images("train",num_class,model_name)
     #np.save(npy_file, train_images)
+print('train_images.shape: {}'.format(train_images.shape))
 
+print("-------------------------------")
 print("loading validation image")
 npy_file = "validation_images_" + str(num_class) + ".npy"
 if os.path.isfile(npy_file):
@@ -52,6 +58,7 @@ if os.path.isfile(npy_file):
 else:
     validation_images = get_images("validation",num_class,model_name)
     #np.save(npy_file, validation_images)
+print('validation_images.shape: {}'.format(validation_images.shape))
 
 def process_images(image, label):
     image = tf.image.per_image_standardization(image)
