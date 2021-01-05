@@ -31,8 +31,6 @@ def decode_jpeg_and_label(filename):
   label = label.values[0]
   label_int = tf.strings.to_number(label, out_type=tf.dtypes.int32)
   return image, label_int
-filename_test = 'train/2_113_7_0_2_20161219204335837.jpg.chip.jpg'
-test1, test2  = decode_jpeg_and_label(filename_test)
 
 model=create_alexnet_model(num_class)
 checkpoint_path = "model_alexnet/cp.ckpt"
