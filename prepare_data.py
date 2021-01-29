@@ -1,4 +1,4 @@
-import tensorflow as tf
+#import tensorflow as tf
 import cv2
 import numpy as np
 #import onnxruntime
@@ -51,57 +51,44 @@ def main():
     if os.path.isdir(test_dir):
         os.rmdir(test_dir)
     
-    shutil.copytree(input_dir, train_dir)
+    #shutil.copytree(input_dir, train_dir)
     os.mkdir(validation_dir)
     os.mkdir(test_dir)
+    os.mkdir(train_dir)
+    image_name = []
+    for (dirpath, dirnames, filenames) in walk(input_dir):
+        image_name.extend(filenames)
+    for image in image_name:
+        if image.split("_")[2] == "2" and int(image.split("_")[0]) <= 100: #using data of asia and upto 100 year old
+            path_file = os.path.join(input_dir,image)
+            shutil.copy(path_file,train_dir)
 
+    
     image_name = []
     for (dirpath, dirnames, filenames) in walk(train_dir):
         image_name.extend(filenames)
     for image in image_name:
         class_name = ""
-        if int(image.split("_")[0]) >=1 and int(image.split("_")[0]) <=10:
-            class_name += "1"
-        elif int(image.split("_")[0]) >=11 and int(image.split("_")[0]) <=19:
-            class_name += "2"
-        elif int(image.split("_")[0]) >=20 and int(image.split("_")[0]) <=39:
-            class_name += "3"
-        elif int(image.split("_")[0]) >=40 and int(image.split("_")[0]) <=49:
-            class_name += "4"
-        elif int(image.split("_")[0]) >=50 and int(image.split("_")[0]) <=60:
-            class_name += "5"
-        elif int(image.split("_")[0]) >=61 and int(image.split("_")[0]) <=116:
-            class_name += "6"
-
-        if int(image.split("_")[1]) ==0:
-            class_name += "1"
-        elif int(image.split("_")[1]) ==1:
-            class_name += "2"
-
-        if int(image.split("_")[2]) ==0 or int(image.split("_")[2]) ==4:
-            class_name += "1"
-        elif int(image.split("_")[2]) ==1:
-            class_name += "2"
-        elif int(image.split("_")[2]) ==2:
-            class_name += "3"
-        elif int(image.split("_")[2]) ==3:
-            class_name += "4"
+        class_name += image.split("_")[0]
+        class_name += image.split("_")[1]
         input_name= os.path.join(train_dir,image)
         output_name= os.path.join(train_dir,class_name + "_" + image)
         os.rename(input_name, output_name)
     
+    create_new_label(train_dir)
+    
     image_name = []
     image_name_class = []
-    cur_class = 0
+    cur_class = -1
     count = 1
     for (dirpath, dirnames, filenames) in walk(train_dir):
         image_name.extend(filenames)
 
     for image in image_name:
         if cur_class != int(image.split("_")[0]):
-            if cur_class != 0:
-                print("current class: ",cur_class)
-                print("count: ",count)
+            if cur_class != -1:
+                #print("current class: ",cur_class)
+                #print("count: ",count)
                 test_image = random.choice(image_name_class)
                 input_name= os.path.join(train_dir,test_image)
                 output_name= os.path.join(test_dir,test_image)
@@ -121,8 +108,8 @@ def main():
             count+=1
             image_name_class.append(image)
     
-    print("current class: ",cur_class)
-    print("count: ",count)
+    #print("current class: ",cur_class)
+    #print("count: ",count)
     test_image = random.choice(image_name_class)
     input_name= os.path.join(train_dir,test_image)
     output_name= os.path.join(test_dir,test_image)
@@ -136,10 +123,6 @@ def main():
         image_name_class.remove(valid_image)
     image_name_class = []
     
-    create_new_label(train_dir)
-    create_new_label(validation_dir)
-    create_new_label(test_dir)
-
 
 
 if __name__ == "__main__":

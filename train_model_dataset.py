@@ -13,7 +13,7 @@ from lib import create_alexnet_model
 print(tf.__version__)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--n', type=int, default=48)
+parser.add_argument('--n', type=int, default=176)
 args = parser.parse_args()
 num_class = args.n
 
@@ -61,6 +61,7 @@ validation_ds = (image_validdataset
 checkpoint_dir = os.path.dirname(checkpoint_path)
 cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,save_weights_only=True,verbose=1)
 model.fit(train_ds, epochs=50, validation_data=validation_ds, validation_freq=1, callbacks=[cp_callback])
+model.save("model_alexnet_savedmodel")
 
 test_loss, test_acc = model.evaluate(validation_ds)
 print("model, accuracy: {:5.2f}%".format(100 * test_acc))
