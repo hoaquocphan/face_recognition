@@ -12,8 +12,12 @@ import cv2
 from lib import get_label, get_images, create_model, create_alexnet_model
 import argparse
 
-
-
+###########################################
+#this is test model file for train_model_dataset.py
+#python3 train_model_dataset.py  
+#python3 -m tf2onnx.convert --saved-model model_alexnet_savedmodel/ --output model_alexnet.onnx --inputs conv2d_input:0[1,227,227,3] --inputs-as-nchw conv2d_input:0
+#python3 test_model_dataset.py
+###########################################
 parser = argparse.ArgumentParser()
 parser.add_argument('--image', type=str, default='car.jpg')
 parser.add_argument('--age', type=int, default=5)
