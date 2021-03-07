@@ -14,6 +14,7 @@ print(tf.__version__)
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--option', type=str, default='onnx')
+parser.add_argument('--model_path', type=str, default='model.onnx')
 parser.add_argument('--age', type=int, default=5)
 args = parser.parse_args()
 
@@ -120,7 +121,7 @@ def main():
         model_name = 'normal'
         test_model_preload_data(model_name, num_class)
     elif args.option == 'onnx':
-        model_path = "model_alexnet_nchw.onnx"
+        model_path = args.model_path
         test_model_onnx(model_path)
     else:
         print("currently, test_model.py doesn't support this test type")

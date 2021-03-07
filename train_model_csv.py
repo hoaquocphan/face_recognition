@@ -91,25 +91,40 @@ validation_image_path = []
 test_image_path = []
 
 
-
 for i in range(num_class):
     train_image_path_ori.append('train/'+ str(i) + '_*jpg')
 
+
+
 for i in train_data:
-    #train_image_path.append(DIR + "/" + i['image_name'])
-    train_image_path.append(i['id'])
+    train_image_path.append(DIR + "/" + i['image_name'])
+    #train_image_path.append(i['id'])
+
+
+'''
 for i in valid_data:
     #validation_image_path.append(DIR + "/" + i['image_name'])
     validation_image_path.append(i['id'])
 for i in test_data:
     #test_image_path.append(DIR + "/" + i['image_name'])
     test_image_path.append(i['id'])
+'''
 
-filenames_traindataset = tf.data.Dataset.from_tensor_slices(train_image_path)
-filenames_validdataset = tf.data.Dataset.from_tensor_slices(validation_image_path)
-filenames_testdataset = tf.data.Dataset.from_tensor_slices(test_image_path)
 
 filenames_traindataset_ori = tf.data.Dataset.list_files(train_image_path_ori, shuffle=True)
+print("----------------")
+print(filenames_traindataset_ori)
+
+
+#hangup
+filenames_traindataset = tf.data.Dataset.list_files(train_image_path,  shuffle=True)
+print("----------------")
+print(filenames_traindataset)
+print("----------------")
+'''
+filenames_validdataset = tf.data.Dataset.from_tensor_slices(validation_image_path)
+filenames_testdataset = tf.data.Dataset.from_tensor_slices(test_image_path)
+'''
 
 #filenames_traindataset = tf.data.Dataset.list_files(train_image_path, shuffle=True)
 #filenames_validdataset = tf.data.Dataset.list_files(validation_image_path, shuffle=True)
@@ -126,7 +141,7 @@ filenames_traindataset_ori = tf.data.Dataset.list_files(train_image_path_ori, sh
 #print(filenames_testdataset)
 
 image_traindataset_ori = filenames_traindataset_ori.map(decode_jpeg_and_label)
-image_traindataset = filenames_traindataset.map(decode_jpeg_and_label_train)
+#image_traindataset = filenames_traindataset.map(decode_jpeg_and_label_train)
 #image_validdataset = filenames_validdataset.map(decode_jpeg_and_label_valid)
 #image_testdataset = filenames_testdataset.map(decode_jpeg_and_label_test)
 
@@ -135,13 +150,13 @@ image_traindataset = filenames_traindataset.map(decode_jpeg_and_label_train)
 
 
 '''
-image_data = "validation/2_113_5_0_2_20161219194354209.jpg.chip.jpg"
+image_data = "validation/3_10_1_0_2_20161219140525218.jpg.chip.jpg"
 image, label = decode_jpeg_and_label(image_data)
 print(image)
 print(label)
+'''
 
-
-
+'''
 image_id = "8460"
 image, label = decode_jpeg_and_label_train(image_id)
 print(image)
@@ -151,8 +166,8 @@ print(label)
 
 
 '''
-train_ds_size = tf.data.experimental.cardinality(image_traindataset).numpy()
-validation_ds_size = tf.data.experimental.cardinality(image_validdataset).numpy()
+#train_ds_size = tf.data.experimental.cardinality(image_traindataset).numpy()
+#validation_ds_size = tf.data.experimental.cardinality(image_validdataset).numpy()
 
 train_ds = (image_traindataset
             .map(process_images)
