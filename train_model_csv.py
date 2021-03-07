@@ -10,6 +10,9 @@ import cv2
 import re
 import argparse
 import csv
+import pandas as pd
+import ntpath
+
 from lib import create_alexnet_model
 print(tf.__version__)
 
@@ -38,47 +41,55 @@ def process_images(image, label):
     return image, label
 
 def decode_jpeg_and_label(filename):
-    print(filename)
     bits = tf.io.read_file(filename)
     image = tf.image.decode_jpeg(bits)
     label = tf.strings.split(tf.expand_dims(filename, axis=-1), sep='/')
-    print("---------------")
-    print(label)
-    label = tf.strings.split(tf.expand_dims(label.values[1], axis=-1), sep='_')
-    print(label)
+    label = tf.strings.split(tf.expand_dims(label.values[6], axis=-1), sep='_')
     label = label.values[0]
-    print(label)
-    label_int = tf.strings.to_number(label, out_type=tf.dtypes.int32)
-    print(label_int)
-    print("---------------")
-    return image, label_int
-
-def decode_jpeg_and_label_train(id):
-    print(id)
-    print("hoaphan")
-    id2 = tf.strings.split(tf.expand_dims(id, axis=-1))
-    print(id2)
-    #print(train_data[int(id)]['image_name'])
-    return 1, 2
-    '''
-    bits = tf.io.read_file(DIR + "/" + train_data[int(id)]['image_name'])
-    image = tf.image.decode_jpeg(bits)
-    label = train_data[int(id)]['label']
     label_int = tf.strings.to_number(label, out_type=tf.dtypes.int32)
     return image, label_int
-    '''
 
-def decode_jpeg_and_label_valid(id):
-    bits = tf.io.read_file(DIR + "/" + valid_data[int(id)]['image_name'])
+
+database_train = pd.read_csv(train_csv)
+database_valid = pd.read_csv(valid_csv)
+
+def decode_jpeg_and_label_train(filename):
+    bits = tf.io.read_file(filename)
     image = tf.image.decode_jpeg(bits)
-    label = valid_data[int(id)]['label']
+    #########################################################
+    # issue here: filename should be string, not tensor
+    filename = ntpath.basename(filename)
+
+    x = database_train[database_train.image_name == filename]
+    label = x['label'].to_string(index=False)
+    label_int = tf.strings.to_number(label, out_type=tf.dtypes.int32)
+    return image, label_int
+
+'''
+print("decode_jpeg_and_label------------------------------")
+image, label_int = decode_jpeg_and_label("/media/sf_ubuntu20/AI/face_recognition/train/3_10_1_0_2_20161219204012884.jpg.chip.jpg")
+
+
+print("decode_jpeg_and_label_train------------------------")
+image, label_int = decode_jpeg_and_label_train("/media/sf_ubuntu20/AI/face_recognition/UTKFace/10_0_0_20170110224500062.jpg.chip.jpg")
+'''
+
+
+def decode_jpeg_and_label_valid(filename):
+    bits = tf.io.read_file(filename)
+    image = tf.image.decode_jpeg(bits)
+    filename = ntpath.basename(filename)
+    x = database_valid[database_valid.image_name == filename]
+    label = x['label'].to_string(index=False)
     label_int = tf.strings.to_number(label, out_type=tf.dtypes.int32)
     return image, label_int
 
 def decode_jpeg_and_label_test(id):
-    bits = tf.io.read_file(DIR + "/" + test_data[int(id)]['image_name'])
+    bits = tf.io.read_file(filename)
     image = tf.image.decode_jpeg(bits)
-    label = test_data[int(id)]['label']
+    database = pd.read_csv(test_csv)
+    x = database[database.image_name == filename]
+    label = x['label'].to_string(index=False)
     label_int = tf.strings.to_number(label, out_type=tf.dtypes.int32)
     return image, label_int
 
@@ -91,6 +102,7 @@ validation_image_path = []
 test_image_path = []
 
 
+
 for i in range(num_class):
     train_image_path_ori.append('train/'+ str(i) + '_*jpg')
 
@@ -100,11 +112,11 @@ for i in train_data:
     train_image_path.append(DIR + "/" + i['image_name'])
     #train_image_path.append(i['id'])
 
+for i in valid_data:
+    validation_image_path.append(DIR + "/" + i['image_name'])
+    #validation_image_path.append(i['id'])
 
 '''
-for i in valid_data:
-    #validation_image_path.append(DIR + "/" + i['image_name'])
-    validation_image_path.append(i['id'])
 for i in test_data:
     #test_image_path.append(DIR + "/" + i['image_name'])
     test_image_path.append(i['id'])
@@ -113,18 +125,20 @@ for i in test_data:
 
 filenames_traindataset_ori = tf.data.Dataset.list_files(train_image_path_ori, shuffle=True)
 print("----------------")
+print("filenames_traindataset_ori")
 print(filenames_traindataset_ori)
 
 
 #hangup
 filenames_traindataset = tf.data.Dataset.list_files(train_image_path,  shuffle=True)
 print("----------------")
+print("filenames_traindataset")
 print(filenames_traindataset)
 print("----------------")
-'''
+
 filenames_validdataset = tf.data.Dataset.from_tensor_slices(validation_image_path)
-filenames_testdataset = tf.data.Dataset.from_tensor_slices(test_image_path)
-'''
+#filenames_testdataset = tf.data.Dataset.from_tensor_slices(test_image_path)
+
 
 #filenames_traindataset = tf.data.Dataset.list_files(train_image_path, shuffle=True)
 #filenames_validdataset = tf.data.Dataset.list_files(validation_image_path, shuffle=True)
@@ -140,9 +154,10 @@ filenames_testdataset = tf.data.Dataset.from_tensor_slices(test_image_path)
 #print(test_image_path)
 #print(filenames_testdataset)
 
+
 image_traindataset_ori = filenames_traindataset_ori.map(decode_jpeg_and_label)
-#image_traindataset = filenames_traindataset.map(decode_jpeg_and_label_train)
-#image_validdataset = filenames_validdataset.map(decode_jpeg_and_label_valid)
+image_traindataset = filenames_traindataset.map(decode_jpeg_and_label_train)
+image_validdataset = filenames_validdataset.map(decode_jpeg_and_label_valid)
 #image_testdataset = filenames_testdataset.map(decode_jpeg_and_label_test)
 
 #print(image_traindataset)
@@ -165,7 +180,7 @@ print(label)
 
 
 
-'''
+
 #train_ds_size = tf.data.experimental.cardinality(image_traindataset).numpy()
 #validation_ds_size = tf.data.experimental.cardinality(image_validdataset).numpy()
 
@@ -181,9 +196,9 @@ validation_ds = (image_validdataset
 
 checkpoint_dir = os.path.dirname(checkpoint_path)
 cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,save_weights_only=True,verbose=1)
+print("train model!")
 model.fit(train_ds, epochs=50, validation_data=validation_ds, validation_freq=1, callbacks=[cp_callback])
 
 test_loss, test_acc = model.evaluate(validation_ds)
 print("model, accuracy: {:5.2f}%".format(100 * test_acc))
 
-'''
